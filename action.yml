@@ -1,5 +1,5 @@
 name: GitHub App access token generator
-description: Generates a app installation access token to be used for cloning dependencies from other internal or private repositories using docker and golang
+description: Generates a app installation access token to be used for cloning dependencies from other internal or private repositories
 inputs:
   app-private-key:
     description: Private key for the GitHub App
