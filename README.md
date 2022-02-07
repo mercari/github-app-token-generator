@@ -12,7 +12,7 @@ jobs:
   checkout:
     runs-on: ubuntu-latest
     steps:
-    - uses: mercari/go-github-app-token-generator@v1
+    - uses: mercari/github-app-token-generator@v1
       id: get-token
       with:
         app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
