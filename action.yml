@@ -1,0 +1,26 @@
+name: GitHub App access token generator
+description: Generates a app installation access token to be used for cloning dependencies from other internal or private repositories
+inputs:
+  app-private-key:
+    description: Private key for the GitHub App
+    required: true
+  app-id:
+    description: GitHub App ID
+    required: true
+  app-installation-id:
+    description: GitHub Installation ID
+    required: true
+outputs:
+  token:
+    description: Installation access token for the GitHub App
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.app-private-key }}
+    - ${{ inputs.app-id }}
+    - ${{ inputs.app-installation-id }}
+author: mercari
+branding:
+  icon: zap
+  color: green
