@@ -12,12 +12,13 @@ jobs:
   checkout:
     runs-on: ubuntu-latest
     steps:
-    - uses: mlioo/go-github-app-token-gen@v1
+    - uses: mercari/go-github-app-token-generator@v1
       id: get-token
       with:
         app-private-key: ${{ secrets.APP_PRIVATE_KEY }}
         app-id: ${{ secrets.APP_ID }}
         app-installation-id: ${{ secrets.APP_INSTALLATION_ID}}
+        
     - name: Check out an other repo
       uses: actions/checkout@v2
       with:
