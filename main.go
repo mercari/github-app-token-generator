@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/pem"
 	"fmt"
+	"io"
 	"os"
 )
 
@@ -42,7 +43,16 @@ func main() {
 		setFailed("Failed to get installation key", fmt.Sprintf("Unable to get intallation token. err: %s", err))
 	}
 
-	setOutput("token", token)
+	githubOutputFile, err := openGitHubOutput(os.Getenv("GITHUB_OUTPUT"))
+	if err != nil {
+		setFailed("Failed to set the output 'token'", fmt.Sprintf("Unable to open GITHUB_OUTPUT. err: %s", err))
+		return
+	}
+	defer githubOutputFile.Close()
+
+	if err := setOutput(githubOutputFile, "token", token); err != nil {
+		setFailed("Failed to set the output 'token'", fmt.Sprintf("Unable to write the token to GITHUB_OUTPUT. err: %s", err))
+	}
 }
 
 func loadPEMFromBytes(key []byte) (*rsa.PrivateKey, error) {
@@ -59,9 +69,15 @@ func loadPEMFromBytes(key []byte) (*rsa.PrivateKey, error) {
 	return parsedKey, nil
 }
 
-func setOutput(name, value string) {
-	// print output to stdout
-	fmt.Printf("::set-output name=%s::%s", name, value)
+func openGitHubOutput(p string) (io.WriteCloser, error) {
+	return os.OpenFile(p, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
+}
+
+func setOutput(file io.Writer, name, value string) error {
+	if _, err := file.Write([]byte(fmt.Sprintf("%s=%s\n", name, value))); err != nil {
+		return err
+	}
+	return nil
 }
 
 func setFailed(title, msg string) {
