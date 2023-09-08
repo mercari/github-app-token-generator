@@ -32,7 +32,7 @@ jobs:
 |-----------------------|-------------------------------------------------|-----------|----------|
 | `app-id`              | GitHub App ID                                   | ✅         | `number` |
 | `app-installation-id` | ID of the app installation to your organization | ✅         | `number` |
-| `app-private-key`     | Private key of your GitHub App                  | ✅         | `string` |
+| `app-private-key`     | Private key of your GitHub App (Base64 encoded) | ✅         | `string` |
 
 ## Outputs
 
