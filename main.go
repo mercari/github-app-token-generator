@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -41,6 +42,10 @@ func main() {
 	token, err := getInstallationToken(appInstId, jwt)
 	if err != nil {
 		setFailed("Failed to get installation key", fmt.Sprintf("Unable to get intallation token. err: %s", err))
+	}
+
+	if err := redactSecret(token); err != nil {
+		setFailed("Failed to redact secret", fmt.Sprintf("Unable to redact secret. err: %s", err))
 	}
 
 	githubOutputFile, err := openGitHubOutput(os.Getenv("GITHUB_OUTPUT"))
@@ -77,6 +82,15 @@ func setOutput(file io.Writer, name, value string) error {
 	if _, err := file.Write([]byte(fmt.Sprintf("%s=%s\n", name, value))); err != nil {
 		return err
 	}
+	return nil
+}
+
+func redactSecret(secret string) error {
+	secret = strings.TrimSpace(secret)
+	if strings.ContainsAny(secret, "\r\n") {
+		return fmt.Errorf("cannot redact multiline secret")
+	}
+	fmt.Printf("::add-mask::%s\n", secret)
 	return nil
 }
 
